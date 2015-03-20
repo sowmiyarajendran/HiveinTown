@@ -1,0 +1,197 @@
+
+
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+
+     tools:context=".MainActivity"
+    android:id="@+id/maina"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+   >
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:orientation="vertical">
+    <TextView
+        android:layout_height="match_parent"
+        android:layout_width="296dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="20dp"
+
+        android:padding="10dp"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Domestic Helper Details"
+        android:id="@+id/appname"
+        android:textAlignment="center"
+       />
+    <requestFocus/>
+    <EditText
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:inputType="textPersonName"
+        android:ems="10"
+        android:id="@+id/name"
+        android:layout_below="@id/appname"
+        android:textAlignment="center"
+
+        android:editable="true"
+        android:contentDescription="Enter Helper Name"
+        android:hint="Enter Helper Name" />
+
+
+    <EditText
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:inputType="number"
+        android:ems="10"
+        android:id="@+id/age"
+        android:maxLength="2"
+        android:layout_below="@id/name"
+
+        android:editable="true"
+        android:hint="Enter Age" />
+    <RadioGroup
+        android:id="@+id/radiogroup"
+        android:layout_width="wrap_content"
+        android:layout_gravity="clip_horizontal"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:weightSum="25">
+
+
+    <RadioButton
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Male"
+        android:id="@+id/radioButtonMale"
+        android:checked="true"
+        />
+
+    <RadioButton
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Female"
+        android:id="@+id/radioButtonFemale"
+        android:checked="false"
+      />
+    </RadioGroup>
+    <EditText
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:inputType="phone"
+        android:ems="10"
+        android:maxLength="10"
+        android:id="@+id/phoneno"
+        android:layout_below="@id/radiogroup"
+        android:editable="true"
+        android:hint="Enter Phone No" />
+
+    <EditText
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:inputType="textPostalAddress"
+        android:ems="10"
+        android:id="@+id/homeaddress"
+        android:layout_below="@id/phoneno"
+        android:editable="true"
+        android:hint="Enter Address" />
+
+    <EditText
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:id="@+id/appartments"
+        android:layout_below="@id/homeaddress"
+        android:editable="true"
+        android:hint="Visiting Appartments" />
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Enter Photo &amp; Address Proof "
+        android:id="@+id/textView"
+        android:textSize="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@id/appartments"
+        />
+
+    <Button
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Take Photo"
+        android:id="@+id/buttonPhoto"
+        android:layout_below="@+id/textView"
+        android:onClick="onPhoto" />
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/imageViewPhoto"
+        android:contentDescription="pic of helper" />
+
+    <Button
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:text="Address Proof"
+        android:id="@+id/buttonAddress"
+        android:onClick="onAddProof" />
+
+    <Spinner
+        android:layout_width="match_parent"
+        android:prompt="@string/prompt"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner1"
+       android:entries="@array/spinner1"
+        android:visibility="visible" />
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/imageViewAddProof"
+        android:contentDescription="pic of address proof" />
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Identity Proof"
+        android:id="@+id/buttonIdentityProof"
+        android:onClick="onIDProof"/>
+    <Spinner
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/spinner2"
+        android:entries="@array/spinner2"
+        android:prompt="@string/prompt"
+        />
+
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:id="@+id/imageIdentity"
+        android:contentDescription="pic of identity proof"/>
+
+    <Button
+            android:layout_height="wrap_content"
+            android:layout_width="100dp"
+            android:text="SAVE"
+
+
+        android:id="@+id/buttonSave"
+        android:nestedScrollingEnabled="false"
+        android:onClick="onSave" />
+
+    <Button
+        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+
+        android:text="RESET"
+
+        android:id="@+id/buttonReset"
+
+
+        android:onClick="onReset" />
+
+</LinearLayout>
+
+
+</ScrollView>
