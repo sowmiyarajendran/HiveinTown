@@ -1,6 +1,7 @@
 package com.androidexample.hiveintown;
 
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -22,6 +23,7 @@ import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -45,18 +47,16 @@ public class MainActivity extends Activity implements AdapterView.OnItemSelected
     private final String TAG = "MainActivity";
     // file url to store image/video
     private Uri fileUri;
+    private byte[] temp1,temp2,temp3;
     //reference to previews and button
     private ImageView photoPreview;
     private ImageView addProofPreview,IdentityPreview;
     private Button hSave, hReset, hPhoto, hAddress,hIdentity;
 private ImageView image1,image2,image3;
 private String day,month;
-    private Editable name;
-    private Editable age;
-    private CharSequence sex;
-    private Editable phoneno;
-    private Editable address;
-    private Editable visiting;
+    private String name,    age, phoneno, address,    visiting;
+    private String sex,doc1,doc2;
+
     private RadioGroup radioGroup;
     private RadioButton radioButton;
     private EditText helperName;
@@ -125,17 +125,7 @@ private String day,month;
         hReset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               helperName.setText("");
-                helperAge.setText("");
-                radioGroup.check(R.id.radioButtonMale);
-                helperAddress.setText("");
-                helperPhoneNo.setText("");
-                visitingAppartments.setText("");
-                photoPreview.setImageBitmap(null);
-                addProofPreview.setImageBitmap(null);
-                IdentityPreview.setImageBitmap(null);
-                spinner1.setSelection(0);
-                spinner2.setSelection(0);
+               clearall();
 
             }
         });
@@ -177,22 +167,28 @@ private String day,month;
 
     private void onSave() {
         Log.d(TAG,"onsave");
-        name= helperName.getText();
-        age=helperAge.getText();
+        name= helperName.getText().toString();
+        age=helperAge.getText().toString();
         int selected=radioGroup.getCheckedRadioButtonId();
        radioButton=(RadioButton)findViewById(selected);
-       sex=radioButton.getText();
-        phoneno=helperPhoneNo.getText();
-        address=helperAddress.getText();
-        visiting=visitingAppartments.getText();
+       sex=radioButton.getText().toString();
+        phoneno=helperPhoneNo.getText().toString();
+        address=helperAddress.getText().toString();
+        visiting=visitingAppartments.getText().toString();
         image1=photoPreview;
         image2=addProofPreview;
         image3=IdentityPreview;
+        doc1=day;
+        doc2=month;
         Log.d(TAG,""+day+month);
+        Log.d(TAG,""+name+age+sex+phoneno+address+visiting+ day+ month + temp1+temp2+temp3);
+        DbHandler dbHandler= new DbHandler(this);
 
+        //dbHandler.getContact(phoneno);
 
-
-        Log.d(TAG,""+name+age+sex+phoneno+address+visiting);
+            dbHandler.addContact(new HelperDatabase(name,age,sex,phoneno,address,visiting,temp1,doc1,temp2,doc2,temp3));
+            Toast.makeText(this,"Data Added",LENGTH_LONG).show();
+            clearall();
 
     }
 
@@ -204,7 +200,21 @@ private String day,month;
              return false;
 
     }
+//clearall
+    void clearall(){
+        helperName.setText("");
+        helperAge.setText("");
+        radioGroup.check(R.id.radioButtonMale);
+        helperAddress.setText("");
+        helperPhoneNo.setText("");
+        visitingAppartments.setText("");
+        photoPreview.setImageBitmap(null);
+        addProofPreview.setImageBitmap(null);
+        IdentityPreview.setImageBitmap(null);
+        spinner1.setSelection(0);
+        spinner2.setSelection(0);
 
+    }
 
 
 //capturing camera image
@@ -253,7 +263,29 @@ private void captureAddressProof() {
                 // successfully captured the image
                 // display it in image view
 
-                previewCapturedphoto();
+                try {
+                    // hide video preview
+                    addProofPreview.setVisibility(View.VISIBLE);
+                    IdentityPreview.setVisibility(View.VISIBLE);
+                    photoPreview.setVisibility(View.VISIBLE);
+
+                    // bimatp factory
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+
+                    // downsizing image as it throws OutOfMemory Exception for larger
+                    // images
+                    options.inSampleSize = 8;
+
+                    final Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(),options);
+                    photoPreview.setImageBitmap(bitmap);
+                    ContentValues cv= new ContentValues();
+                    ByteArrayOutputStream outputStream= new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream);
+                    temp1=outputStream.toByteArray();
+
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
             } else if (resultCode == RESULT_CANCELED) {
                 // user cancelled Image capture
                 makeText(getApplicationContext(),
@@ -270,8 +302,29 @@ private void captureAddressProof() {
             if (resultCode == RESULT_OK) {
                 // video successfully recorded
                Log.d(TAG,"onimage2ok");
-                // preview the recorded video
-                previewCapturedAddProof();
+                try {
+                    // hide video preview
+                    addProofPreview.setVisibility(View.VISIBLE);
+                    IdentityPreview.setVisibility(View.VISIBLE);
+                    photoPreview.setVisibility(View.VISIBLE);
+
+                    // bimatp factory
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+
+                    // downsizing image as it throws OutOfMemory Exception for larger
+                    // images
+                    options.inSampleSize = 8;
+
+                    final Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(),options);
+                    addProofPreview.setImageBitmap(bitmap);
+                    ContentValues cv= new ContentValues();
+                    ByteArrayOutputStream outputStream= new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream);
+                    temp2=outputStream.toByteArray();
+
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
             } else if (resultCode == RESULT_CANCELED) {
                 // user cancelled recording
                 makeText(getApplicationContext(),
@@ -285,9 +338,38 @@ private void captureAddressProof() {
             }
         }else if(requestCode== CAMERA_CAPTURE_IMAGE3_REQUEST_CODE){
             if (resultCode == RESULT_OK) {
-                // video successfully recorded
-                Log.d(TAG,"onimage3ok");
-             previewCapturedIdentity();
+                try {
+                    // hide video preview
+                    photoPreview.setVisibility(View.VISIBLE);
+                    IdentityPreview.setVisibility(View.VISIBLE);
+
+                    addProofPreview.setVisibility(View.VISIBLE);
+
+                    // bimatp factory
+                    BitmapFactory.Options options = new BitmapFactory.Options();
+
+                    // downsizing image as it throws OutOfMemory Exception for larger
+                    // images
+                    options.inSampleSize = 8;
+
+                    final Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
+                            options);
+                    IdentityPreview.setImageBitmap(bitmap);
+
+                    ContentValues cv= new ContentValues();
+                    ByteArrayOutputStream outputStream= new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG,100,outputStream);
+                    temp3=outputStream.toByteArray();
+
+
+
+
+
+
+
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                }
             } else if (resultCode == RESULT_CANCELED) {
                 // user cancelled recording
                 makeText(getApplicationContext(),
@@ -303,80 +385,8 @@ private void captureAddressProof() {
         }
     }
 
-    private void previewCapturedIdentity() {
-        try {
-            // hide video preview
-            photoPreview.setVisibility(View.VISIBLE);
-            IdentityPreview.setVisibility(View.VISIBLE);
-
-            addProofPreview.setVisibility(View.VISIBLE);
-
-            // bimatp factory
-            BitmapFactory.Options options = new BitmapFactory.Options();
-
-            // downsizing image as it throws OutOfMemory Exception for larger
-            // images
-            options.inSampleSize = 8;
-
-            final Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
-                    options);
-        IdentityPreview.setImageBitmap(bitmap);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-    }
 
 
-    private void previewCapturedAddProof() {
-
-        try {
-            // hide video preview
-            photoPreview.setVisibility(View.VISIBLE);
-            IdentityPreview.setVisibility(View.VISIBLE);
-
-            addProofPreview.setVisibility(View.VISIBLE);
-
-            // bimatp factory
-            BitmapFactory.Options options = new BitmapFactory.Options();
-
-            // downsizing image as it throws OutOfMemory Exception for larger
-            // images
-            options.inSampleSize = 8;
-
-            final Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
-                    options);
-
-            addProofPreview.setImageBitmap(bitmap);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void previewCapturedphoto() {
-        Log.d(TAG,"previewCapturePhoto");
-        try {
-            // hide video preview
-            addProofPreview.setVisibility(View.VISIBLE);
-            IdentityPreview.setVisibility(View.VISIBLE);
-
-            photoPreview.setVisibility(View.VISIBLE);
-
-            // bimatp factory
-            BitmapFactory.Options options = new BitmapFactory.Options();
-
-            // downsizing image as it throws OutOfMemory Exception for larger
-            // images
-            options.inSampleSize = 8;
-
-            final Bitmap bitmap = BitmapFactory.decodeFile(fileUri.getPath(),
-                    options);
-
-            photoPreview.setImageBitmap(bitmap);
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-    }
 //Helper Methods
     // Creating file uri to store image/video
 
@@ -452,9 +462,6 @@ private void captureAddressProof() {
 
 
 
-    //DAtabase Handler
-   // DbHandler dbHandler= new DbHandler(this);
-   
 
 
 

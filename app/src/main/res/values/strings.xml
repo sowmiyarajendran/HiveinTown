@@ -3,7 +3,7 @@
 
     <string name="app_name">HiveinTown</string>
     <string name="btn_TakePic">Take Picture</string>
-    <string name="btn_Upload">Upload</string>
+    <string name="upload_app">Upload</string>
     <string-array name="spinner1"  >
         <item>Please Select the Proof Type</item>
         <item>Aadhar Card</item>
